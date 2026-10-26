@@ -1,19 +1,26 @@
 {
   "name": "ashiato-viewer",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host",
     "geodata": "node scripts/build-geodata.mjs",
-    "analyze": "tsx scripts/analyze-cli.ts"
+    "analyze": "tsx scripts/analyze-cli.ts",
+    "api": "tsx scripts/ashiato.ts",
+    "api:serve": "tsx scripts/api-server.ts",
+    "mcp": "tsx scripts/mcp-server.ts",
+    "build:agent": "esbuild scripts/ashiato.ts scripts/mcp-server.ts --bundle --platform=node --format=esm --target=node20 --outdir=dist-agent --out-extension:.js=.mjs --log-level=warning --banner:js=\"import { createRequire as __cr } from 'node:module'; const require = __cr(import.meta.url);\"",
+    "docs:api": "tsx scripts/gen-api-docs.ts"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "maplibre-gl": "^5.24.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",

@@ -32,6 +32,24 @@ Mac と iPhone を同じ Wi-Fi につなぎ、`npm run dev` の表示にある `
 | 経路検索 | 乗車駅・経由駅・降車駅、移動手段、平均時速・所要時間・距離、期間・曜日・時間帯で移動を検索 |
 | 場所 | よく行く場所（滞在地）のランキングと名前付け、市区町村・都道府県の制覇マップ |
 
+## 検索・集計 API（AI エージェント向け）
+
+同じ解析結果を **CLI・HTTP API・MCP サーバー**から検索・集計できます。Claude Desktop / Cowork / Claude Code に MCP サーバーとして登録すると、
+「去年いちばん長く電車に乗った日は？」のような質問に AI エージェントが答えられます。
+
+```bash
+./bin/ashiato summary                                                  # 全体の概要
+./bin/ashiato search_trips --from 新宿 --to 東京 --limit 5              # 駅で移動を検索
+./bin/ashiato search_legs --modes car --min-kmh 80 --min-minutes 20    # 速度・時間で区間を検索
+./bin/ashiato aggregate --group-by month,mode --sort-by key            # 月別×手段別の集計
+npm run api:serve                                                      # HTTP API（http://127.0.0.1:5190/api）
+npm run build:agent                                                    # MCP サーバー・CLI の1ファイル版を作る
+```
+
+- 使い方と MCP の登録方法: [docs/API.md](docs/API.md)
+- コマンドと引数の一覧（自動生成）: [docs/API-reference.md](docs/API-reference.md)
+- AI エージェント用スキル: [skills/ashiato-viewer/SKILL.md](skills/ashiato-viewer/SKILL.md)
+
 ## 解析の仕組み（`src/core/analyze.ts`）
 
 1. **前処理**: 時刻順に並べ替え、重複・精度の悪い点・瞬間移動（A→B→A 型）を除去。「Point出発」は登録地点の座標なので軌跡には使わない。

@@ -1,0 +1,13 @@
+#!/bin/sh
+# 足跡ビューアの CLI（どのフォルダからでも実行できる）
+# Mac では TypeScript をそのまま実行。それ以外（Cowork のサンドボックスなど）では
+# `npm run build:agent` で作った1ファイル版（Node だけで動く）を使う。
+DIR="$(cd "$(dirname "$0")/.." && pwd)"
+if [ "$(uname -s)" = "Darwin" ] && [ -x "$DIR/node_modules/.bin/tsx" ]; then
+  exec "$DIR/node_modules/.bin/tsx" "$DIR/scripts/ashiato.ts" "$@"
+fi
+if [ -f "$DIR/dist-agent/ashiato.mjs" ]; then
+  exec node "$DIR/dist-agent/ashiato.mjs" "$@"
+fi
+echo '{"error":"dist-agent/ashiato.mjs がありません。Mac で npm run build:agent を実行してください"}'
+exit 1

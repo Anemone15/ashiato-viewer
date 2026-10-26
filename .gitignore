@@ -1,6 +1,7 @@
 node_modules
-dist
-data/
+/dist
+/data/
 geodata/raw/
 .DS_Store
 .claude/
+/dist-agent/

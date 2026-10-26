@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { emptyQuery, type TripQuery } from './core/query';
 import {
-  clearFiles, fetchServerFile, fetchServerIndex, loadFiles, loadPlaceNames, sameAsServer, saveFiles, savePlaceNames,
+  clearFiles, fetchServerFile, fetchServerIndex, fetchServerPlaceNames, loadFiles, loadPlaceNames, sameAsServer, saveFiles,
+  savePlaceNames, saveServerPlaceNames,
   type PlaceName, type StoredFile,
 } from './data/storage';
 import { buildAppData, type AppData } from './ui/appdata';
@@ -45,6 +46,20 @@ export function App() {
   const setPlaceNames = useCallback((n: PlaceName[]) => {
     setPlaceNamesState(n);
     savePlaceNames(n);
+    saveServerPlaceNames(n);
+  }, []);
+
+  // 場所の名前は Mac の data/place-names.json と同期（CLI・API・他の端末と共有）
+  useEffect(() => {
+    fetchServerPlaceNames().then((server) => {
+      if (server) {
+        setPlaceNamesState(server);
+        savePlaceNames(server);
+      } else {
+        const local = loadPlaceNames();
+        if (local.length) saveServerPlaceNames(local);
+      }
+    });
   }, []);
 
   // 地図
